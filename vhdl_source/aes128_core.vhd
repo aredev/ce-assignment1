@@ -305,9 +305,8 @@ reg_round_keys : process(clk)
 reg_decryption_key : process(clk)
 	begin
 		if(rising_edge(clk)) then
-			-- Is_X checks if the given vector is uninitialized
-			if (enc_dec = '1' and is_last_key = '1' and Is_X(decryption_key)) then
-				decryption_key <= new_round_key;
+			if (sel_load_new_dec_key = '1') then
+				decryption_key <= round_key;
 			else
 				null;
 			end if;
@@ -317,7 +316,7 @@ reg_decryption_key : process(clk)
 key_schedule : aes_update_key
     Port Map(
         key => round_key,
-		enc_dec => enc_dec,
+		enc_dec => encryption_mode_enabled,
         round_constant => round_constant,
         new_key => new_round_key
     );
